@@ -95,7 +95,7 @@ public class UsuarioService {
 
         Endereco endereco = usuarioConverter.updateEndereco(enderecoDTO,entity);
 
-        return usuarioConverter.paraEnderecoDTO(enderecoRepository.save(endereco));
+            return usuarioConverter.paraEnderecoDTO(enderecoRepository.save(endereco));
     }
 
     public TelefoneDTO atualizaTelefone(Long idTelefone, TelefoneDTO dto) {
@@ -105,7 +105,31 @@ public class UsuarioService {
 
         Telefone telefone = usuarioConverter.updateTelefone(dto,entity );
 
-        return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
+            return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
 
     }
+
+    public EnderecoDTO cadastraEndereco(String token, EnderecoDTO dto) {
+        String email = jwtUtil.extrairEmailToken(token.substring(7));
+
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email não localizado " + email));
+
+        Endereco endereco = usuarioConverter.paraEnderecoEntity(dto, usuario.getId());
+
+            return usuarioConverter.paraEnderecoDTO(enderecoRepository.save(endereco));
+    }
+
+    public TelefoneDTO cadastraTelefone(String token, TelefoneDTO dto) {
+        String email = jwtUtil.extrairEmailToken(token.substring(7));
+
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("Email não localizado " + email));
+
+        Telefone telefone = usuarioConverter.paraTelefoneEntity(dto, usuario.getId());
+
+            return usuarioConverter.paraTelefoneDTO(telefoneRepository.save(telefone));
+    }
+
+
 }
